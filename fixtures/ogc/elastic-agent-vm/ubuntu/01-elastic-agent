@@ -1,0 +1,17 @@
+#!/bin/bash
+# Variables required to be exported
+# OGC_FLEET_ENROLLMENT_TOKEN
+# OGC_FLEET_URL
+# OGC_ELASTIC_AGENT_URL
+
+
+<%namespace name="utils" file="/functions.mako"/>
+
+${utils.setup_env()}
+
+# Download elastic-agent tarball
+wget -O elastic-agent.tar.gz ${env["OGC_ELASTIC_AGENT_URL"]}
+${utils.extract('elastic-agent.tar.gz')}
+
+mv elastic-agent-*-linux-x86_64 elastic-agent
+cd elastic-agent && sudo ./elastic-agent install -f --url=${env["OGC_FLEET_URL"]} --enrollment-token=${env["OGC_FLEET_ENROLLMENT_TOKEN"]} --tag=$(date +%Y-%m-%d),$(hostname),${node.public_ip},real-vm
